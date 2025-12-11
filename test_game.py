@@ -106,8 +106,42 @@ def handle_party(player, command):
     print("Your current party:")
     for item in player.party:
         print(f" - {item.name}")
-    
 
+
+def handle_examine(player, command):
+    """
+    Example command: "examine potion" or "examine bulbasaur"
+    Prints the description of the target item, object, or Pokémon.
+    """
+    parts = command.split(" ", 1)
+    
+    if len(parts) < 2:
+        print("Examine what?")
+        return
+
+    target_name = parts[1].strip().lower()
+
+    # 1. Search objects in the current room
+    for obj in player.current_room.objects:
+        if obj.name == target_name:
+            print(f"{obj.name.title()} > {obj.inspect()}")
+            return
+
+    # 2. Search objects in the player's inventory
+    for obj in player.inventory:
+        if obj.name == target_name:
+            print(f"{obj.name.title()} > {obj.inspect()}")
+            return
+
+    # 3. Search player's party (Pokémon)
+    for pokemon in player.party:
+        if pokemon.name.lower() == target_name:
+            moves_list = ", ".join([move.name for move in pokemon.moves]) if pokemon.moves else "No moves yet"
+            print(f"{pokemon.name.title()} > HP: {pokemon.health}, Type: {pokemon.type}, Moves: {moves_list}")
+            return
+
+    # 4. Target not found
+    print("You don't see that here.")
 
 
 #   How the method works:
@@ -149,17 +183,17 @@ def handle_talk(player, command):
 
 
 COMMAND_HANDLERS = {
-    # LOOK / EXAMINE COMMANDS
-    "look": handle_look,
-    "examine": handle_look,
-    "inspect": handle_look,
-    "check": handle_look,
-    "view": handle_look,
-    "observe": handle_look,
-    "scan": handle_look,
+    # EXAMINE COMMANDS
+    "examine": handle_examine,
+    "inspect": handle_examine,
+    "check": handle_examine,
+    "view": handle_examine,
+    "observe": handle_examine,
+    "scan": handle_examine,
 
     # CHECK ROOM
     "look around": handle_look,
+    "look": handle_look,
 
     # MOVE COMMANDS
     "go": handle_move,
@@ -231,13 +265,38 @@ def main():
 
 
 
+
+
+
+
 #   while True: is an infinite loop that keeps the game running, until we explicitly break or exit.
 #   Loop converts input into lowercase and removes trailing spaces.
 #   Take user input and compare it to all items in COMMAND_HANDLERS to find a match.
 #   If user input does not find a match in COMMAND_HANDLERS, print "Unknown command"
 
+#   while True: is an infinite loop that keeps the game running, until we explicitly break or exit.
+#   Loop converts input into lowercase and removes trailing spaces.
+#   Take user input and compare it to all items in COMMAND_HANDLERS to find a match.
+#   If user input does not find a match in COMMAND_HANDLERS, print "Unknown command"
+
+FILLER_WORDS = {"to", "at", "the", "a", "an", "on", "in"}
+
+def clean_command(command):
+    # Remove common filler words from a command to make parsing easier.
+    words = command.split()
+    cleaned_words = [w for w in words if w not in FILLER_WORDS]
+    return " ".join(cleaned_words)
+
+def main():
+    starting_room = build_world()
+    player = Player(starting_room)
+    print()
+    print("Location:", player.current_room.name)
+
+    # Game loop
     while True:
-        command = input("> ").lower().strip()
+        raw_command = input("> ").lower().strip()
+        command = clean_command(raw_command)  # remove "to", "the", etc.
 
         for cmd, func in COMMAND_HANDLERS.items():
             if command.startswith(cmd):
@@ -246,15 +305,9 @@ def main():
         else:
             print("Unknown command.")
 
+
 if __name__ == "__main__":
     main()
 
 
 # Problems:
-# "go to" does not work.
-# "examine potion" returns room description, not item description.
-# "pokemon use skill" is not implimented.
-# Pokemon objects missing
-# Battle mechanics missing
-# "Look aroundZ command does not work due to "look" triggering a method first. 
-# ... many more
