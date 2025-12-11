@@ -101,6 +101,14 @@ def handle_inventory(player, command):
         print(f" - {item.name}")
 
 
+#  COMMENT LATER
+def handle_party(player, command):
+    print("Your current party:")
+    for item in player.party:
+        print(f" - {item.name}")
+    
+
+
 
 #   How the method works:
 #   Player writes: " Talk to Mom ". 
@@ -178,6 +186,12 @@ COMMAND_HANDLERS = {
     "items": handle_inventory,
     "show items": handle_inventory,
 
+    # SHOW PARTY/POKEMON
+    "party": handle_party,
+    "show party": handle_party,
+    "pokemon": handle_party,
+    "show pokemon": handle_party,
+
     # TALK COMMAND
     "talk": handle_talk,
 
@@ -242,5 +256,5 @@ if __name__ == "__main__":
 # "pokemon use skill" is not implimented.
 # Pokemon objects missing
 # Battle mechanics missing
-# "Look around" command does not work due to "look" triggering a method first. 
+# "Look aroundZ command does not work due to "look" triggering a method first. 
 # ... many more

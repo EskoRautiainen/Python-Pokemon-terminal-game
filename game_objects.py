@@ -31,13 +31,18 @@ class Item(GameObject):
 
 
 class NPC(GameObject):
-    def __init__(self, name, description, dialogues=None):
+    def __init__(self, name, description, dialogues=None, repeatable=True):
         super().__init__(name, description, talkable=True)
         # dialogues: list of tuples (line:str, trigger:callable or None)
         self.dialogues = dialogues or [("Hello.", None)]
         self.dialog_index = 0
+        self.repeatable = repeatable
 
     def talk(self, player=None):
+        if not self.dialogues:
+            return "They have nothing more to say."
+
+        # Get the current dialogue
         line, trigger = self.dialogues[self.dialog_index]
 
         # Run trigger if it exists
@@ -46,6 +51,18 @@ class NPC(GameObject):
             # Remove trigger so it only happens once
             self.dialogues[self.dialog_index] = (line, None)
 
-        # Increment dialogue index
-        self.dialog_index = (self.dialog_index + 1) % len(self.dialogues)
+        # Advance dialogue index
+        self.dialog_index += 1
+
+        if self.repeatable:
+            # Loop around if repeatable
+            self.dialog_index %= len(self.dialogues)
+        else:
+            # Stop at last dialogue
+            if self.dialog_index >= len(self.dialogues):
+                self.dialog_index = len(self.dialogues) - 1
+
         return line
+
+    
+# PROBLEM: NPC NEEDS ADDITIONAL COMMENTS.
