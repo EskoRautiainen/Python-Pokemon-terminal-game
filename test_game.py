@@ -1,5 +1,6 @@
 import sys
 from player import Player
+from pokemon import Pokemon
 from world import build_world
 from game_objects import NPC
 from game_objects import Item
@@ -123,21 +124,20 @@ def handle_examine(player, command):
 
     # 1. Search objects in the current room
     for obj in player.current_room.objects:
-        if obj.name == target_name:
-            print(f"{obj.name.title()} > {obj.inspect()}")
+        if obj.name.lower() == target_name:
+            print(obj) if isinstance(obj, Pokemon) else print(f"{obj.name.title()} > {obj.inspect()}")
             return
 
     # 2. Search objects in the player's inventory
     for obj in player.inventory:
-        if obj.name == target_name:
-            print(f"{obj.name.title()} > {obj.inspect()}")
+        if obj.name.lower() == target_name:
+            print(obj) if isinstance(obj, Pokemon) else print(f"{obj.name.title()} > {obj.inspect()}")
             return
 
     # 3. Search player's party (Pokémon)
     for pokemon in player.party:
         if pokemon.name.lower() == target_name:
-            moves_list = ", ".join([move.name for move in pokemon.moves]) if pokemon.moves else "No moves yet"
-            print(f"{pokemon.name.title()} > HP: {pokemon.health}, Type: {pokemon.type}, Moves: {moves_list}")
+            print(pokemon)  # uses Pokemon.__str__()
             return
 
     # 4. Target not found
@@ -180,6 +180,53 @@ def handle_talk(player, command):
 #   3. Object not found in the room
     print("They are not here.")
 
+
+def handle_throw_pokeball(player, command):
+    # Example: "throw pokeball bulbasaur"
+    parts = command.split()
+    if len(parts) < 2:
+        print("Throw pokeball at what?")
+        return
+
+    target_name = " ".join(parts[1:]).strip()  # everything after "throw pokeball"
+
+    # Look for Pokémon in current room
+    for obj in player.current_room.objects:
+        if isinstance(obj, Pokemon) and obj.name.lower() == target_name:
+            if len(player.party) < 6:
+                player.party.append(obj)
+                player.current_room.objects.remove(obj)
+                print(f"You caught {obj.name}!")
+            else:
+                print(f"Your party is full! {obj.name} remains wild.")
+            return
+
+    print(f"There is no {target_name} here.")
+
+
+
+def apply_force_handler(player, command):
+    # Example commands: "hit tree", "kick rock"
+    parts = command.split()
+    if len(parts) < 2:
+        print("Apply force to what?")
+        return
+
+    verb = parts[0]  # The action: hit, kick, etc.
+    target_name = " ".join(parts[1:]).strip().lower()  # everything after the verb
+
+    # Look for objects in the current room
+    for obj in player.current_room.objects:
+        if obj.name.lower() == target_name:
+            # If the object has trigger_action, use it
+            if hasattr(obj, "trigger_action") and callable(obj.trigger_action):
+                obj.trigger_action(verb, player)
+                return
+            # Default message if object has no trigger
+            print(f"You {verb} the {obj.name}, but nothing happens.")
+            return
+
+    print(f"You don't see a {target_name} here.")
 
 
 COMMAND_HANDLERS = {
@@ -233,13 +280,13 @@ COMMAND_HANDLERS = {
     "quit": handle_quit,
 
     # APPLY FORCE COMMANDS
-    #"hit": apply_force_handler,
-    #"strike": apply_force_handler,
-    #"punch": apply_force_handler,
-    #"swing": apply_force_handler,
-    #"kick": apply_force_handler,
-    #"tackle": apply_force_handler,
-    #"smack": apply_force_handler,
+    "hit": apply_force_handler,
+    "strike": apply_force_handler,
+    "punch": apply_force_handler,
+    "swing": apply_force_handler,
+    "kick": apply_force_handler,
+    "tackle": apply_force_handler,
+    "smack": apply_force_handler,
 
     # PULL COMMANDS
     #"pull": pull_handler,
@@ -250,6 +297,11 @@ COMMAND_HANDLERS = {
     #"draw": pull_handler,
     #"jerk": pull_handler,
     #"heave": pull_handler,
+
+    # THROW POKEBALL / CAPTURE
+    "throw pokeball": handle_throw_pokeball,
+    "pokeball": handle_throw_pokeball,
+    "catch": handle_throw_pokeball,
 }
 
 

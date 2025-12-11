@@ -1,54 +1,66 @@
 from room import Room
-from game_objects import Item, NPC
-from triggers import give_potion
-from triggers import choose_starter
+from game_objects import Item, NPC, HeavyItem, GameObject
+from triggers import give_potion, choose_starter, tree_hit_trigger
 
-#   build_world creates all rooms, places objects, connects the map, and returns the starting room. 
-#   It is called from main() in test_game.py.
 
 def build_world():
+#----------------------------------------------------------------------------------------------------------------------
+#                               DEFINE MAP OBJECTS
+#----------------------------------------------------------------------------------------------------------------------
 
-#   Create objects that can be placed inside rooms.
-#   In the NPC class, dialogues is a list of tuples: (dialogue_text, optional_trigger_function)
-#   If the trigger is not None, it is executed when that dialogue line is reached.
+    #   Create objects that can be placed inside rooms.
+    #   In the NPC class, dialogues is a list of tuples: (dialogue_text, optional_trigger_function)
+    #   If the trigger is not None, it is executed when that dialogue line is reached.
 
     potion = Item("potion", "A basic healing spray used for Pokémon.")
-    
-    mom = NPC("Mom", "Mom is making mashed potatoes.",
-    dialogues=[
-        ("Ash! Today is time to start your Pokémon adventure... Sniff...", None),
-        ("It's okay. All children must leave home one day.", None),
-        ("Remember to always be kind to Pokémon and trainers you meet!", give_potion)
-    ],
-    repeatable=True
-)
+
+    forest_tree = HeavyItem("tree", "A tall oak tree with thick branches.",
+        triggers={
+            "hit": tree_hit_trigger,
+            "kick": tree_hit_trigger
+        }
+    )
+
+    mom = NPC(
+        "Mom",
+        "Mom is making mashed potatoes.",
+        dialogues=[
+            ("Ash! Today is time to start your Pokémon adventure... Sniff...", None),
+            ("It's okay. All children must leave home one day.", None),
+            ("Remember to always be kind to Pokémon and trainers you meet!", give_potion)
+        ],
+        repeatable=True
+    )
 
     professor = NPC(
-    "Professor Oak",
-    "Professor Oak is tinkering with some gadgets.",
-    dialogues=[
-        (
-            "Hello, there! My name is Oak. People affectionately refer to me as the Pokémon professor.",
-            None
-        ),
-        (
-            "For some people, Pokémon are pets. Others use them for battling. As for myself, I study Pokémon as a profession.",
-            None
-        ),
-        (
-            "When I was younger, I was a passionate Pokémon trainer. That was a long time ago, and now I only have a few left. "
-            "I'll let you choose one so you can start your own Pokémon adventure. "
-            "I have the Leaf-type \033[32mBulbasaur\033[0m, ""the Water-type \033[34mSquirtle\033[0m, or the Fire-type \033[31mCharmander\033[0m?",
-            None
-        ),
-        (
-            "That's a fine choice. Please take good care of it.",
-            choose_starter
-        )
-    ],
-    repeatable=False
-)
+        "Professor Oak",
+        "Professor Oak is tinkering with some gadgets.",
+        dialogues=[
+            (
+                "Hello, there! My name is Oak. People affectionately refer to me as the Pokémon professor.",
+                None
+            ),
+            (
+                "For some people, Pokémon are pets. Others use them for battling. As for myself, I study Pokémon as a profession.",
+                None
+            ),
+            (
+                "When I was younger, I was a passionate Pokémon trainer. That was a long time ago, and now I only have a few left. "
+                "I'll let you choose one so you can start your own Pokémon adventure. "
+                "I have the Leaf-type \033[32mBulbasaur\033[0m, the Water-type \033[34mSquirtle\033[0m, or the Fire-type \033[31mCharmander\033[0m?",
+                None
+            ),
+            (
+                "That's a fine choice. Please take good care of it.",
+                choose_starter
+            )
+        ],
+        repeatable=False
+    )
 
+#----------------------------------------------------------------------------------------------------------------------
+#                               CREATE ROOMS AND ADD OBJECTS.
+#----------------------------------------------------------------------------------------------------------------------
 
     bedroom = Room("My Room", "Your cozy bedroom. A small red spray bottle labeled 'Potion' sits on your desk.")
     bedroom.add_object(potion)
@@ -63,7 +75,7 @@ def build_world():
     lab.add_object(professor)
 
     viridian_Forest_Area = Room("Viridian Forest Open Field", "Dim forest with thick trees all around. Old oak stands tall and on a quick glance, you could see something move on the branches")
-    
+    viridian_Forest_Area.add_object(forest_tree)
     
     viridian_Forest_Pond = Room("Viridian Forest Pond", "Beautiful pond glisters nearby")
     
@@ -94,7 +106,9 @@ def build_world():
 
 
 
-#   Connect rooms using one-way directional links.
+#----------------------------------------------------------------------------------------------------------------------
+#                               CONNECT ROOMS
+#----------------------------------------------------------------------------------------------------------------------
 
     bedroom.connect("down", home)
     home.connect("up", bedroom)
@@ -138,10 +152,12 @@ def build_world():
     Pewter_City.connect("west", Pewter_City_Gym)
     Pewter_City_Gym.connect("east", Pewter_City)
 
-#   Return the starting room. (Game entry point)
 
+#----------------------------------------------------------------------------------------------------------------------
+#                               STARTING POINT
+#----------------------------------------------------------------------------------------------------------------------
 #   def build_world is called with:
 #       def main():
 #       starting_room = build_world()
 
-    return lab 
+    return viridian_Forest_Area 
