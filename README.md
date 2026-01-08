@@ -4,7 +4,7 @@ The game loosely follows the structure of the original Pokemon story and allows 
 
 ## How do you play?
 The game is played entirely trough the terminal. You need get creative and write actions based on the queues the environment and NPC's offer. The actions you write change the game state and allow you to progress.
-Heres a brief summary of how you play the game:
+Heres a brief explanation of how you play the game:
 
 <img width="2120" height="1036" alt="image" src="https://github.com/user-attachments/assets/0e9beb07-ac16-4096-8437-0ff1e052990f" />
 <img width="2116" height="1093" alt="image" src="https://github.com/user-attachments/assets/76121ea7-2acc-4b2b-859c-7053fa20edd5" />
