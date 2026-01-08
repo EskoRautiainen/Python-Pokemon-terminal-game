@@ -15,6 +15,7 @@ Heres a brief explanation of how you play the game:
 The game runs on infinite loop that asks for player input. Lets call it the "response engine".
 Response engine takes the terminal input, removes certain words from it and tries to match it with a __command handler__.
 These words are removed: FILLER_WORDS = {"to", "at", "the", "a", "an", "on", "in"}.
+
 "Talk to the professor oak" => "talk professor oak" => trigger handle_talk function.
 
 Examples of some allowed words and their handlers:
@@ -90,11 +91,12 @@ The game uses a variety of different classes and subclasses.
 ## How the game starts?
 
 Response engine starts with the line: starting_room = build_world(). This triggers the creation of the entire world, where rooms are created and connected to each other. Items, NPC's and Pokemon are generated and placed as objects into their corresponding room objects.
+
 starting_room = build_world() returns the starting room for the player and the infinite response loop begins.
 You may exit the game by writing "quit".
+
+
 Cheers!
-
-
 <img width="211" height="209" alt="image" src="https://github.com/user-attachments/assets/04003581-4be6-4544-b8b2-f2bb91786450" />
 
 
