@@ -71,8 +71,30 @@ The game uses a variety of different classes and subclasses.
 
 
 ### Game objects
-- GameObject main class contains 
+- GameObject main class contains two subclasses: Item and HeavyItem. Items are pickable, while HeavyItems are not.
 <img width="1124" height="862" alt="image" src="https://github.com/user-attachments/assets/413df6d2-f3eb-45dc-8765-dfcccbb74864" />
+
+### Pokemon and move class
+- Pokemons have their type, stats and moves defined as they are spawned into a room. Pokemon objects have an attribute self.moves that contains an __Array__ for __Move__ objects.
+<img width="1121" height="661" alt="image" src="https://github.com/user-attachments/assets/c823027e-cceb-4b06-bd5c-70112264001c" />
+<img width="753" height="146" alt="image" src="https://github.com/user-attachments/assets/1e3f314d-10a5-4e6e-9980-120c448105ce" />
+
+
+### NPC class
+- Non-playable characters are created using classes as well. NPC's are talkable, but not takeable.
+<img width="699" height="560" alt="image" src="https://github.com/user-attachments/assets/d0712a4a-023c-47b9-aa35-eb7ff4ee5be4" />
+<img width="1379" height="587" alt="image" src="https://github.com/user-attachments/assets/288968a1-094b-4184-9291-30cb38ade8ae" />
+
+
+## How the game starts?
+
+Response engine starts with the line: starting_room = build_world(). This triggers the creation of the entire world, where rooms are created and connected to each other. Items, NPC's and Pokemon are generated and placed as objects into their corresponding room objects.
+starting_room = build_world() returns the starting room for the player and the infinite response loop begins.
+You may exit the game by writing "quit".
+Cheers!
+
+
+<img width="211" height="209" alt="image" src="https://github.com/user-attachments/assets/04003581-4be6-4544-b8b2-f2bb91786450" />
 
 
 
