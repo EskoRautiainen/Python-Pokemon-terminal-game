@@ -93,10 +93,11 @@ The game uses a variety of different classes and subclasses.
 Response engine starts with the line: starting_room = build_world(). This triggers the creation of the entire world, where rooms are created and connected to each other. Items, NPC's and Pokemon are generated and placed as objects into their corresponding room objects.
 
 starting_room = build_world() returns the starting room for the player and the infinite response loop begins.
+
 You may exit the game by writing "quit".
-
-
 Cheers!
+
+
 <img width="211" height="209" alt="image" src="https://github.com/user-attachments/assets/04003581-4be6-4544-b8b2-f2bb91786450" />
 
 
