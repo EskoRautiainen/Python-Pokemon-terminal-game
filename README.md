@@ -1,5 +1,5 @@
 # Zorg-styled text based Pokemon adventure game
-This project is a zorg-styled text-based adventure game. The game runs on Python terminal and doesnt need any additional installments or plugins.
+This Pokemon-styled adventure game runs on Python terminal and doesnt need any additional installments or plugins.
 The game loosely follows the structure of the original Pokemon story and allows you to explore, solve puzzles, catch Pokemon and gather a party strong enough to beat the Gym Leader Brock in Pewter City and earn the Boulderbadge.
 
 ## How do you play?
