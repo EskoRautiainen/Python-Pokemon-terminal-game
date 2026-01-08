@@ -13,8 +13,9 @@ Heres a brief explanation of how you play the game:
 
 ## How does it work?
 The game runs on infinite loop that asks for player input. Lets call it the "response engine".
-Response engine takes terminal input and removes certain words from it to decipher its meaning and trigger the correct __handler__.
+Response engine takes the terminal input, removes certain words from it and tries to match it with a __command handler__
 These words are removed: FILLER_WORDS = {"to", "at", "the", "a", "an", "on", "in"}
+"Talk to the professor oak" => "talk professor oak" => trigger handle_talk function.
 
 Examples of some allowed words and their handlers:
 
