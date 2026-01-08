@@ -25,9 +25,14 @@ class Player:
 
 
     def move(self, direction):
-        # Try to move the player to the room in the given direction
-        if direction in self.current_room.exits:
-            self.current_room = self.current_room.exits[direction]
-            return f"You move {direction} to {self.current_room.name}."
-        else:
+        exit_data = self.current_room.exits.get(direction)
+
+        if not exit_data:
             return "You can't go that way."
+
+        guard = exit_data.get("guard")
+        if guard and not guard(self):
+            return "You can't go that way."
+
+        self.current_room = exit_data["room"]
+        return f"You move {direction} to {self.current_room.name}."

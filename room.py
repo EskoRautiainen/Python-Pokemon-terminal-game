@@ -11,14 +11,17 @@ class Room:
         self.description = description
         self.exits = {}   # example: {"north": Viridian Forest}
         self.objects = []
+        self.pokemon = []
 
 
 #   def connect is called from world.py with: bedroom.connect("direction", room)
 #   this creates an exit into another room.
 
-    def connect(self, direction, room):
-        # Connect this room to another room in a given direction
-        self.exits[direction] = room
+    def connect(self, direction, room, guard=None):
+        self.exits[direction] = {
+        "room": room,
+        "guard": guard
+    }
 
 #   Items are created using Item or NPC constructor: potion = Item("potion", "A basic healing spray used for Pokémon.")
 #   def add_object is called from world.py with: bedroom.add_object(potion)
@@ -26,6 +29,11 @@ class Room:
 
     def add_object(self, obj):
         self.objects.append(obj)
+
+    #  New method for adding Pokémon
+    def add_pokemon(self, pokemon):
+        self.objects.append(pokemon)  # Pokémon behaves like a GameObject
+        self.pokemon.append(pokemon)  # Keep a separate list if needed
 
 # def full_description is called from test_game.py, when using handle_look: print(player.current_room.full_description())
 # full_description returns room description and possible exits.

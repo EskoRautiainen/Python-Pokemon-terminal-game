@@ -1,12 +1,7 @@
-# game_objects.py defines the types of objects that can exist in the world
-# GameObjects is the base class, while Item and NPC are subclasses of it.
-# takeable and talkable are boolean values that define object rules.
-# You can't talk to a rock or put Professor Oak in your inventory.
-
-
 #----------------------------------------------------------------------------------------------------------------------
-#                               GAME_OBJECT CLASS
+#                               GAMEOBJECT
 #----------------------------------------------------------------------------------------------------------------------
+
 class GameObject:
     def __init__(self, name, description, takeable=False, talkable=False):
         self.name = name.lower()
@@ -14,26 +9,21 @@ class GameObject:
         self.takeable = takeable
         self.talkable = talkable
 
-# Used to examine items. Prints out items self.description.
     def inspect(self):
         return self.description
 
-
-# Defines default behaviour for talking to a GameObject.
     def talk(self, player=None):
         return "They don't respond."
 
-#----------------------------------------------------------------------------------------------------------------------
-#                               GAME_OBJECT SUBCLASSES
-#----------------------------------------------------------------------------------------------------------------------
 
-# Item is a subclass of GameObject. It inherits all attributes and methods from GameObject.
-# Item subclass overrides parent class takeable boolean setting.
-# All Items are takeable, while all HeavyItems are not takeable, but you can apply triggers to them.
+#----------------------------------------------------------------------------------------------------------------------
+#                               GAMEOBJECT - SUBCLASSES
+#----------------------------------------------------------------------------------------------------------------------
 
 class Item(GameObject):
     def __init__(self, name, description):
         super().__init__(name, description, takeable=True)
+
 
 class HeavyItem(GameObject):
     def __init__(self, name, description, triggers=None):
@@ -47,7 +37,45 @@ class HeavyItem(GameObject):
             print(f"You {action} the {self.name}, but nothing happens.")
 
 
+#----------------------------------------------------------------------------------------------------------------------
+#                               MOVE CLASS
+#----------------------------------------------------------------------------------------------------------------------
+class Move:
+    def __init__(self, name, type_):
+        self.name = name
+        self.type = type_
 
+    def __str__(self):
+        return f"{self.name} ({self.type})"
+
+
+#----------------------------------------------------------------------------------------------------------------------
+#                               POKEMON CLASS
+#----------------------------------------------------------------------------------------------------------------------
+class Pokemon:
+    def __init__(self, name, type_, health=50, moves=None):
+        self.name = name
+        self.type = type_
+        self.health = health
+        self.moves = moves or []
+
+        # Optional puzzle/state hook (used for special cases like Poliwag pond)
+        self.pond_puzzle = None  
+
+    def __str__(self):
+        moves_list = ", ".join(str(move) for move in self.moves) if self.moves else "No moves"
+        return f"{self.name} ({self.type}) - HP: {self.health} | Moves: {moves_list}"
+
+
+#----------------------------------------------------------------------------------------------------------------------
+#                               POLIWAG POND PUZZLE
+#----------------------------------------------------------------------------------------------------------------------
+class PoliwagPondPuzzle:
+    def __init__(self):
+        self.bait_dropped = False
+        self.counter = 0
+        self.rope_pulled = False
+        self.catchable = False
 
 
 
@@ -71,7 +99,6 @@ class NPC(GameObject):
         line, trigger = self.dialogues[self.dialog_index]
         if callable(trigger):
             trigger(player)
-            # remove trigger so it triggers only once
             self.dialogues[self.dialog_index] = (line, None)
 
         self.dialog_index += 1
